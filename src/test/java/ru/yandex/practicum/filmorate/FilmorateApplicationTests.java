@@ -56,7 +56,7 @@ class FilmControllerTests {
 				"Про врага Бэтмена Про врага Бэтмена Про врага Бэтмена Про врага Бэтмена Про врага Бэтмена" +
 				"Про врага Бэтмена Про врага Бэтмена Про врага Бэтмена Про врага Бэтмена Про врага Бэтмена");
 		film.setDuration(120);
-		film.setReleaseDate(LocalDate.of(1895,12,25));
+		film.setReleaseDate(LocalDate.of(1895, 12, 25));
 		assertThrows(ValidationException.class, () -> {
 			Film film1 = filmController.create(film);
 		});
@@ -87,5 +87,4 @@ class FilmControllerTests {
 			Film film1 = filmController.create(film);
 		});
 	}
-
 }

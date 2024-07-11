@@ -40,7 +40,7 @@ public class UserController {
 
     @PutMapping
     public User update(@RequestBody User user) {
-        if(user.getId() == null){
+        if (user.getId() == null) {
             throw new NotFoundException("Нет id при запросе");
         }
         checkValidation(user);
@@ -66,8 +66,6 @@ public class UserController {
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Дата рождения не может быть в будущем времени");
         }
-
-
     }
 
     private long getNextId() {

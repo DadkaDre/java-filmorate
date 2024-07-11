@@ -24,47 +24,48 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
 
-    Map<Long,Film> films = new HashMap<>();
+    Map<Long, Film> films = new HashMap<>();
 
     @GetMapping
-    public Collection<Film> getAllFilms(){
+    public Collection<Film> getAllFilms() {
         return films.values();
     }
+
     @PostMapping
     public Film create(@RequestBody Film film) {
         checkValidation(film);
         film.setId(getNextId());
-        films.put(film.getId(),film);
+        films.put(film.getId(), film);
         log.info("Добавили фильм");
-    return film;
+        return film;
     }
 
     @PutMapping
-    public Film update(@RequestBody Film film){
-        if(film.getId() == null){
+    public Film update(@RequestBody Film film) {
+        if (film.getId() == null) {
             throw new NotFoundException("Поле айди нет в запросе");
         }
         checkValidation(film);
-       Film oldFilm = films.get(film.getId());
-       oldFilm.setName(film.getName());
-       oldFilm.setDescription(film.getDescription());
-       oldFilm.setDuration(film.getDuration());
-       oldFilm.setReleaseDate(film.getReleaseDate());
-       return oldFilm;
+        Film oldFilm = films.get(film.getId());
+        oldFilm.setName(film.getName());
+        oldFilm.setDescription(film.getDescription());
+        oldFilm.setDuration(film.getDuration());
+        oldFilm.setReleaseDate(film.getReleaseDate());
+        return oldFilm;
     }
 
-    public void checkValidation(Film film){
-        if(film.getName() == null || film.getName().trim().isBlank()){
+    public void checkValidation(Film film) {
+        if (film.getName() == null || film.getName().trim().isBlank()) {
             throw new ValidationException("Название фильма не может быть пустым");
         }
-        if(film.getDescription().length() > 200){
+        if (film.getDescription().length() > 200) {
             throw new ValidationException("Превышена максимальная длина описания фильма");
         }
-        if(film.getReleaseDate().equals(LocalDate.of(1895,12,25)) ||
-                film.getReleaseDate().isBefore(LocalDate.of(1895,12,25))){
+        if (film.getReleaseDate().equals(LocalDate.of(1895, 12, 25)) ||
+                film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 25))) {
             throw new ValidationException("Дата релиза должна быть позже 1895-12-25");
         }
-        if(film.getDuration() < 0){
+        if (film.getDuration() < 0) {
             throw new ValidationException("Продолжительность фильма не может быть отрицательной");
         }
     }

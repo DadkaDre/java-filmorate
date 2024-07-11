@@ -53,7 +53,6 @@ class UserControllerTests {
         user.setBirthday(LocalDate.of(2025, 4, 24));
         user.setLogin("Botan");
         user.setEmail("adigey@mail.ru");
-
         assertThrows(ValidationException.class, () -> {
             User user1 = userController.create(user);
         });
@@ -67,7 +66,6 @@ class UserControllerTests {
         user.setLogin("Botan");
         user.setEmail("adigey@mail.ru");
         User user1 = userController.create(user);
-
         assertEquals("Botan", user1.getName());
     }
 }
