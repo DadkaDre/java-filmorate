@@ -39,7 +39,7 @@ public class FilmController {
     @PutMapping
     public Film update(@RequestBody Film film) {
         if (film.getId() == null) {
-            throw new NotFoundException("Поле айди нет в запросе");
+            throw new NotFoundException("Поле id нет в запросе");
         }
         checkValidation(film);
         Film oldFilm = films.get(film.getId());
@@ -47,6 +47,7 @@ public class FilmController {
         oldFilm.setDescription(film.getDescription());
         oldFilm.setDuration(film.getDuration());
         oldFilm.setReleaseDate(film.getReleaseDate());
+        log.info("Обновили фильм");
         return oldFilm;
     }
 

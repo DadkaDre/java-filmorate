@@ -32,6 +32,7 @@ public class UserController {
         checkValidation(user);
         user.setId(getNextId());
         users.put(user.getId(), user);
+        log.info("Добавили пользователя");
         return user;
     }
 
@@ -46,6 +47,7 @@ public class UserController {
         userUpdate.setLogin(user.getLogin());
         userUpdate.setEmail(user.getEmail());
         userUpdate.setName(user.getName());
+        log.info("Обновили информацию о пользователе");
         return userUpdate;
     }
 
@@ -61,7 +63,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем времени");
+            throw new ValidationException("Дата рождения введена не корректно");
         }
     }
 
