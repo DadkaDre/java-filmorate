@@ -5,15 +5,12 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 
-/**
- * Film.
- */
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Film {
-    Long id;
-    String name;
-    String description;
-    LocalDate releaseDate;
-    Integer duration;
+public class User {
+     Long id;
+     String email;
+     String login;
+     String name;
+     LocalDate birthday;
 }
