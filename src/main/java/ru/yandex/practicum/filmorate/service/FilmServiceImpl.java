@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class FilmServiceImpl implements FilmService {
         if (userRepository.get(userId) == null) {
             throw new NotFoundException("Нет пользователя с id: " + userId);
         }
-        if (filmRepository.get(id) == null){
+        if (filmRepository.get(id) == null) {
             throw new NotFoundException("Нет фильма по id " + get(id));
         }
         User user = userRepository.get(userId);
