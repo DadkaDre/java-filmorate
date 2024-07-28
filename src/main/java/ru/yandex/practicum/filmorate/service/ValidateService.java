@@ -7,10 +7,11 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+
 @Component
 public class ValidateService {
 
-    private final LocalDate FILM_BIRTHDAY = LocalDate.of(1895, 12, 25);
+    private final LocalDate filmBirthday = LocalDate.of(1895, 12, 25);
 
     public void checkValidationFilm(Film film) {
 
@@ -21,8 +22,8 @@ public class ValidateService {
             throw new ValidationException("Превышена максимальная длина описания фильма");
         }
 
-        if (film.getReleaseDate().equals(FILM_BIRTHDAY) ||
-                film.getReleaseDate().isBefore(FILM_BIRTHDAY)) {
+        if (film.getReleaseDate().equals(filmBirthday) ||
+                film.getReleaseDate().isBefore(filmBirthday)) {
             throw new ValidationException("Дата релиза должна быть позже 1895-12-25");
         }
         if (film.getDuration() < 0) {
