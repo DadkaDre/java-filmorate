@@ -50,8 +50,8 @@ public class InMemoryFilmRepository implements FilmRepository {
     }
 
     @Override
-    public void deleteLike(Long filmId, Long userId) {
-        Set<Long> filmLikes = likes.computeIfAbsent(filmId, k -> new HashSet<>());
+    public void deleteLike(Long id, Long userId) {
+        Set<Long> filmLikes = likes.computeIfAbsent(id, k -> new HashSet<>());
         filmLikes.remove(userId);
     }
 
@@ -79,9 +79,6 @@ public class InMemoryFilmRepository implements FilmRepository {
 
     private Film checkUpdateFieldsFilm(Film film) {
         Film oldFilm = films.get(film.getId());
-        if (oldFilm == null) {
-            throw new NotFoundException("Film with id " + film.getId() + " not found.");
-        }
         oldFilm.setName(film.getName());
         if (film.getDescription() != null) {
             oldFilm.setDescription(film.getDescription());
@@ -93,5 +90,12 @@ public class InMemoryFilmRepository implements FilmRepository {
             oldFilm.setReleaseDate(film.getReleaseDate());
         }
         return oldFilm;
+    }
+
+    @Override
+    public void checkFilm(Long id) {
+        if (films.get(id) == null) {
+            throw new NotFoundException("Фильма по id: " + id + " не существует");
+        }
     }
 }

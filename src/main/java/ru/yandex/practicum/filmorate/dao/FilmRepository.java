@@ -19,5 +19,7 @@ public interface FilmRepository {
 
     List<Film> getPopular(Long count);
 
+    void checkFilm(Long id);
+
     Long getNextId();
 }

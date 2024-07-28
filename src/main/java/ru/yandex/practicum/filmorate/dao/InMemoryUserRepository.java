@@ -29,18 +29,15 @@ public class InMemoryUserRepository implements UserRepository {
    }
 
    @Override
-   public List<User> allFriends(Long userId) {
-      if (users.get(userId) == null) {
-         throw new NotFoundException("Нет пользователя с таким id");
-      }
-      Set<Long> setOfFriends = friends.get(userId);
+   public List<User> allFriends(Long id) {
+      Set<Long> setOfFriends = friends.get(id);
       if (setOfFriends == null) {
-         return new ArrayList<User>();
+         return new ArrayList<>();
       }
 
       ArrayList<User> listOfFriends = new ArrayList<>();
-      for (Long id : setOfFriends) {
-         User user = users.get(id);
+      for (Long userId : setOfFriends) {
+         User user = users.get(userId);
          listOfFriends.add(user);
       }
       return listOfFriends;
@@ -56,65 +53,42 @@ public class InMemoryUserRepository implements UserRepository {
 
    @Override
    public User update(User user) {
-      if (users.get(user.getId()) == null) {
-         throw new NotFoundException("Фильм по id: " + user.getId() + " не найден.");
-      }
       return checkUpdateFields(user);
    }
 
    @Override
-   public void addFriend(Long userId, Long friendId) {
-      if (users.get(userId) == null) {
-         throw new NotFoundException("Нет пользователя с таким id");
-      }
-      if (users.get(friendId) == null) {
-         throw new NotFoundException("Нет пользователя с таким id");
-      }
-
-      Set<Long> userFriends = friends.computeIfAbsent(userId, k -> new HashSet<>());
+   public void addFriend(Long id, Long friendId) {
+      Set<Long> userFriends = friends.computeIfAbsent(id, k -> new HashSet<>());
       userFriends.add(friendId);
 
       Set<Long> userFriends2 = friends.computeIfAbsent(friendId, k -> new HashSet<>());
-      userFriends2.add(userId);
+      userFriends2.add(id);
    }
 
-
    @Override
-   public void deleteFriend(Long userId, Long friendId) {
-      if (users.get(userId) == null) {
-         throw new NotFoundException("Нет пользователя с таким id");
-      }
-      if (users.get(friendId) == null) {
-         throw new NotFoundException("Нет пользователя с таким id");
-      }
-      Set<Long> userFriends = friends.computeIfAbsent(userId, k -> new HashSet<>());
+   public void deleteFriend(Long id, Long friendId) {
+      Set<Long> userFriends = friends.computeIfAbsent(id, k -> new HashSet<>());
       userFriends.remove(friendId);
+
       Set<Long> userFriends2 = friends.computeIfAbsent(friendId, k -> new HashSet<>());
-      userFriends2.remove(userId);
+      userFriends2.remove(id);
    }
 
    @Override
-   public List<User> mutualFriends(Long userId, Long otherUserId) {
-      if (users.get(userId) == null) {
-         throw new NotFoundException("Нет пользователя с таким id");
-      }
-      if (users.get(otherUserId) == null) {
-         throw new NotFoundException("Нет пользователя с таким id");
-      }
-      Set<Long> userFriends = friends.get(userId);
-      Set<Long> otherFriends = friends.get(otherUserId);
+   public List<User> mutualFriends(Long id, Long friendId) {
+      Set<Long> userFriends = friends.get(id);
+      Set<Long> otherFriends = friends.get(friendId);
 
       Set<Long> commonFriends = new HashSet<>(userFriends);
       commonFriends.retainAll(otherFriends);
 
       ArrayList<User> listOfFriends = new ArrayList<>();
-      for (Long id : commonFriends) {
-         User user = users.get(id);
+      for (Long userId : commonFriends) {
+         User user = users.get(userId);
          listOfFriends.add(user);
       }
       return listOfFriends;
    }
-
 
    public void checkFieldsUser(User user) {
       if (user.getName() == null) {
@@ -137,6 +111,13 @@ public class InMemoryUserRepository implements UserRepository {
          oldUser.setLogin(user.getLogin());
       }
       return oldUser;
+   }
+
+   @Override
+   public void checkUserByID(Long id) {
+      if (users.get(id) == null) {
+         throw new NotFoundException("Пользователь по id: " + id + " не существует");
+      }
    }
 
    public Long getNextId() {

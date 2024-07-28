@@ -15,11 +15,13 @@ public interface UserRepository {
 
     User update(User user);
 
-    void addFriend(Long filmId, Long userId);
+    void addFriend(Long id, Long friendId);
 
-    void deleteFriend(Long filmId, Long userId);
+    void deleteFriend(Long id, Long friendId);
 
-    List<User> mutualFriends(Long userId, Long otherUserId);
+    List<User> mutualFriends(Long id, Long friendId);
 
-    List<User> allFriends(Long userId);
+    List<User> allFriends(Long id);
+
+    void checkUserByID(Long id);
 }

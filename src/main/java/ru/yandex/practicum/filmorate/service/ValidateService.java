@@ -31,10 +31,9 @@ public class ValidateService {
         }
     }
 
-    public void checkIdFilm(Film film) {
-
-        if (film.getId() == null) {
-            throw new NotFoundException("Поле id нет в запросе");
+    public void checkId(Long id) {
+        if (id == null) {
+            throw new NotFoundException("Нет поля id в параметрах запроса");
         }
     }
 
@@ -48,12 +47,6 @@ public class ValidateService {
         }
         if (user.getBirthday().isAfter(LocalDate.now()) || user.getBirthday() == null) {
             throw new ValidationException("Дата рождения введена не корректно");
-        }
-    }
-
-    public void checkId(User user) {
-        if (user.getId() == null) {
-            throw new NotFoundException("Нет поля id ");
         }
     }
 }

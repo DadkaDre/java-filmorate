@@ -3,10 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserRepository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -24,18 +21,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Long id) {
-        if (id == null) {
-            throw new NotFoundException("Параметр id отсутствует");
-        }
+        userRepository.checkUserByID(id);
         return userRepository.get(id);
     }
 
     @Override
-    public List<User> allFriends(Long userId) {
-        if (userId == null) {
-            throw new ValidationException("Нет параметра id в запросе");
-        }
-        return userRepository.allFriends(userId);
+    public List<User> allFriends(Long id) {
+        userRepository.checkUserByID(id);
+        return userRepository.allFriends(id);
     }
 
     @Override
@@ -45,36 +38,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        if (userRepository.get(user.getId()) == null) {
-            throw new NotFoundException("Фильм по id: " + user.getId() + " не найден.");
-        }
+        userRepository.checkUserByID(user.getId());
         return userRepository.update(user);
     }
 
     @Override
-    public void addFriend(Long userId, Long friendId) {
-        checkIdFields(userId, friendId);
-        userRepository.addFriend(userId, friendId);
+    public void addFriend(Long id, Long friendId) {
+        userRepository.checkUserByID(id);
+        userRepository.checkUserByID(friendId);
+        userRepository.addFriend(id, friendId);
     }
 
     @Override
-    public void deleteFriend(Long userId, Long friendId) {
-        checkIdFields(userId, friendId);
-        userRepository.deleteFriend(userId, friendId);
+    public void deleteFriend(Long id, Long friendId) {
+        userRepository.checkUserByID(id);
+        userRepository.checkUserByID(friendId);
+        userRepository.deleteFriend(id, friendId);
     }
 
     @Override
-    public List<User> mutualFriends(Long userId, Long otherUserId) {
-        checkIdFields(userId, otherUserId);
-        return userRepository.mutualFriends(userId, otherUserId);
-    }
-
-    public void checkIdFields(Long userId, Long friendId) {
-        if (userId == null) {
-            throw new ValidationException("Параметр id фильма не задан");
-        }
-        if (friendId == null) {
-            throw new ValidationException("Параметр id фильма не задан");
-        }
+    public List<User> mutualFriends(Long id, Long friendId) {
+        userRepository.checkUserByID(id);
+        userRepository.checkUserByID(friendId);
+        return userRepository.mutualFriends(id, friendId);
     }
 }

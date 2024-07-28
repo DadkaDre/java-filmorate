@@ -24,6 +24,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class FilmController {
 
+    private static final String PATH = "/{id}/like/{userId}";
     private final ValidateService validateService;
     private final FilmService filmService;
 
@@ -34,6 +35,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film get(@PathVariable Long id) {
+        validateService.checkId(id);
         return filmService.get(id);
     }
 
@@ -48,23 +50,26 @@ public class FilmController {
 
     @PutMapping
     public Film update(@RequestBody Film film) {
-
         log.info("Update film: start - " + film);
-        validateService.checkIdFilm(film);
+        validateService.checkId(film.getId());
         validateService.checkValidationFilm(film);
         Film updateFilm = filmService.update(film);
         log.info("Update film: end - " + updateFilm);
         return updateFilm;
     }
 
-    @PutMapping("/{id}/like/{userId}")
+    @PutMapping(PATH)
     public void addLike(@PathVariable Long id, @PathVariable Long userId) {
+        validateService.checkId(id);
+        validateService.checkId(userId);
         filmService.addLike(id, userId);
 
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
+    @DeleteMapping(PATH)
     public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
+        validateService.checkId(id);
+        validateService.checkId(userId);
         filmService.deleteLike(id, userId);
     }
 

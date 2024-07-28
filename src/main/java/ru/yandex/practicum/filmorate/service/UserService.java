@@ -16,11 +16,11 @@ public interface UserService {
 
     User update(User user);
 
-    void addFriend(Long userId, Long friendId);
+    void addFriend(Long id, Long friendId);
 
-    void deleteFriend(Long userId, Long friendId);
+    void deleteFriend(Long id, Long friendId);
 
-    List<User> mutualFriends(Long userId, Long otherUserId);
+    List<User> mutualFriends(Long id, Long friendId);
 
-    List<User> allFriends(Long userId);
+    List<User> allFriends(Long id);
 }
