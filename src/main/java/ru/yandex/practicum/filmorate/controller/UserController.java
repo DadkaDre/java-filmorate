@@ -1,79 +1,89 @@
 package ru.yandex.practicum.filmorate.controller;
 
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import java.time.LocalDate;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.ValidateService;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
-    Map<Long, User> users = new HashMap<>();
+
+    private static final String PATH2 = "/{id}/friends/{friendId}";
+    private final UserService userService;
+    private final ValidateService validateService;
 
     @GetMapping
-    public Collection<User> getAllFilms() {
-        return users.values();
+    public Collection<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public User get(@PathVariable Long id) {
+        log.info("Get user: start" + id);
+        validateService.checkId(id);
+        return userService.get(id);
+    }
+
+    @GetMapping("{id}/friends")
+    public List<User> allFriends(@PathVariable Long id) {
+        log.info("Get allFriends: start");
+        validateService.checkId(id);
+        return userService.allFriends(id);
     }
 
     @PostMapping
     public User create(@RequestBody User user) {
-        checkValidation(user);
-        user.setId(getNextId());
-        users.put(user.getId(), user);
-        log.info("Добавили пользователя");
+        log.info("Create user: start - " + user);
+        validateService.checkValidationUser(user);
+        userService.create(user);
+        log.info("Create user: finish  " + user);
         return user;
     }
 
     @PutMapping
     public User update(@RequestBody User user) {
-        if (user.getId() == null) {
-            throw new NotFoundException("Нет id при запросе");
-        }
-        checkValidation(user);
-        User userUpdate = users.get(user.getId());
-        userUpdate.setBirthday(user.getBirthday());
-        userUpdate.setLogin(user.getLogin());
-        userUpdate.setEmail(user.getEmail());
-        userUpdate.setName(user.getName());
-        log.info("Обновили информацию о пользователе");
+
+        log.info("Update user: start -" + user);
+        validateService.checkId(user.getId());
+        validateService.checkValidationUser(user);
+        User userUpdate = userService.update(user);
+        log.info("Update user: finish - " + userUpdate);
         return userUpdate;
     }
 
-
-    public void checkValidation(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank() || !(user.getEmail().contains("@"))) {
-            throw new ValidationException("почта не может быть пустой или не содержать символ @");
-        }
-        if (user.getLogin() == null || user.getLogin().isBlank()) {
-            throw new ValidationException("Поле login не может быть пустым или содержать пробелы");
-        }
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения введена не корректно");
-        }
+    @PutMapping(PATH2)
+    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        validateService.checkId(id);
+        validateService.checkId(friendId);
+        userService.addFriend(id, friendId);
     }
 
-    private long getNextId() {
+    @DeleteMapping(PATH2)
+    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        validateService.checkId(id);
+        validateService.checkId(friendId);
+        userService.deleteFriend(id, friendId);
+    }
 
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> mutualFriends(@PathVariable Long id, @PathVariable("otherId") Long friendId) {
+        validateService.checkId(id);
+        validateService.checkId(friendId);
+        return userService.mutualFriends(id, friendId);
     }
 }

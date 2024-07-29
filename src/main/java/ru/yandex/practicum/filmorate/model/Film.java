@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 
-/**
- * Film.
- */
+
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
