@@ -20,7 +20,7 @@ public interface FilmRepository {
 
     void addLike(Long id, Long userId);
 
-    void deleteLike(Long Id, Long userId);
+    void deleteLike(Long id, Long userId);
 
     List<Film> getPopular(Long count);
 
