@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface GenreRepository {
 
-    Collection <Genre> getAllGenre();
+    Collection<Genre> getAllGenre();
 
     Optional<Genre> getGenreById(Long id);
 
