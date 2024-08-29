@@ -1,17 +1,36 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.genre.GenreRepository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class ValidateService {
 
     private final LocalDate filmBirthday = LocalDate.of(1895, 12, 25);
+    private final NamedParameterJdbcOperations jdbc;
+    private final GenreRepository genreRepository;
 
     public void checkValidationFilm(Film film) {
 
@@ -48,5 +67,45 @@ public class ValidateService {
         if (user.getBirthday().isAfter(LocalDate.now()) || user.getBirthday() == null) {
             throw new ValidationException("Дата рождения введена не корректно");
         }
+    }
+
+    public void checkMpa(Long id) {
+        String sql = "SELECT * FROM mpa WHERE mpa_id = :mpa_id";
+        SqlParameterSource parameter = new MapSqlParameterSource()
+                .addValue("mpa_id", id);
+        try {
+            jdbc.queryForObject(sql, parameter, (rs, rowNum) -> {
+                Mpa mpa = new Mpa();
+                mpa.setId(rs.getLong("mpa_id"));
+                mpa.setName(rs.getString("mpa_name"));
+                return mpa;
+            });
+        } catch (EmptyResultDataAccessException ignored) {
+            throw new ValidationException("Нет такого mpa");
+        }
+    }
+
+    public Film checkGenre(Film film) {
+        if (Objects.nonNull(film.getGenres())) {
+            List<Long> idGenres = film.getGenres().stream().map(Genre::getId).toList();
+            LinkedHashSet<Genre> genres = genreRepository.getGenresList(idGenres).stream()
+                    .sorted(Comparator.comparing(Genre::getId)).collect(Collectors.toCollection(LinkedHashSet::new));
+            if (film.getGenres().size() == genres.size()) {
+                film.getGenres().clear();
+                film.setGenres(genres);
+            } else {
+                log.warn("Жанр введен некорректно.");
+                throw new ValidationException("Жанр введен некорректно.");
+            }
+        }
+        return film;
+    }
+
+    public List<Long> listGenreId() {
+        String sql = "SELECT * FROM genres";
+        return jdbc.query(sql, (rs, rowNow) ->
+                        new Genre(rs.getLong("genre_id"), rs.getString("genre_name"))).stream()
+                .map(Genre::getId)
+                .toList();
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.service.ValidateService;
 import java.util.Collection;
 import java.util.List;
@@ -40,10 +40,9 @@ public class UserController {
     }
 
     @GetMapping("{id}/friends")
-    public List<User> allFriends(@PathVariable Long id) {
-        log.info("Get allFriends: start");
+    public List<User> getAllFriends(@PathVariable Long id) {
         validateService.checkId(id);
-        return userService.allFriends(id);
+        return userService.getAllFriends(id);
     }
 
     @PostMapping
@@ -57,8 +56,6 @@ public class UserController {
 
     @PutMapping
     public User update(@RequestBody User user) {
-
-        log.info("Update user: start -" + user);
         validateService.checkId(user.getId());
         validateService.checkValidationUser(user);
         User userUpdate = userService.update(user);
@@ -81,9 +78,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> mutualFriends(@PathVariable Long id, @PathVariable("otherId") Long friendId) {
+    public List<User> mutualFriends(@PathVariable Long id, @PathVariable Long otherId) {
         validateService.checkId(id);
-        validateService.checkId(friendId);
-        return userService.mutualFriends(id, friendId);
+        validateService.checkId(otherId);
+        return userService.mutualFriends(id, otherId);
     }
 }

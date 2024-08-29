@@ -15,7 +15,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Exception e)throws Throwable {
+    public ErrorResponse handleException(Exception e) throws Throwable {
         log.warn("error", e);
         return new ErrorResponse(e.getMessage());
     }
@@ -26,7 +26,7 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerDadRequest(ValidationException e) {
         log.warn("error", e);
