@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class UserExtractor implements ResultSetExtractor <User> {
+public class UserExtractor implements ResultSetExtractor<User> {
 
     @Override
     public User extractData(ResultSet rs) throws SQLException, DataAccessException {
