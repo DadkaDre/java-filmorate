@@ -33,9 +33,7 @@ public class JdbcGenreStorage implements GenreRepository {
                 .addValue("genre_id", id);
 
         return Optional.ofNullable(jdbc.queryForObject(sql, parameter, (rs, rowNum) -> {
-            Genre genre = new Genre();
-            genre.setId(rs.getLong("genre_id"));
-            genre.setName(rs.getString("genre_name"));
+            Genre genre = new Genre(rs.getLong("genre_id"), rs.getString("genre_name"));
             return genre;
         }));
     }

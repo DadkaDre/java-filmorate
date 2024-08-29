@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private static final String PATH2 = "/{id}/friends/{friendId}";
+    private static final String PATH2 = "/{id}/friends/{friend-id}";
     private final UserService userService;
     private final ValidateService validateService;
 
@@ -64,21 +64,21 @@ public class UserController {
     }
 
     @PutMapping(PATH2)
-    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+    public void addFriend(@PathVariable Long id, @PathVariable("friend-id") Long friendId) {
         validateService.checkId(id);
         validateService.checkId(friendId);
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping(PATH2)
-    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
+    public void deleteFriend(@PathVariable Long id, @PathVariable("friend-id") Long friendId) {
         validateService.checkId(id);
         validateService.checkId(friendId);
         userService.deleteFriend(id, friendId);
     }
 
-    @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> mutualFriends(@PathVariable Long id, @PathVariable Long otherId) {
+    @GetMapping("{id}/friends/common/{other-id}")
+    public List<User> mutualFriends(@PathVariable Long id, @PathVariable("other-id") Long otherId) {
         validateService.checkId(id);
         validateService.checkId(otherId);
         return userService.mutualFriends(id, otherId);
