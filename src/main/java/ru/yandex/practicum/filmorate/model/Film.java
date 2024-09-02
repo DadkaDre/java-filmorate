@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 
 
 @Data
@@ -14,4 +15,6 @@ public class Film {
     String description;
     LocalDate releaseDate;
     Integer duration;
+    Mpa mpa;
+    LinkedHashSet<Genre> genres = new LinkedHashSet<>();
 }

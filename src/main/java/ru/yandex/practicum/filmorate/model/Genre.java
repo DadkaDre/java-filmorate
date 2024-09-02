@@ -1,17 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
-     Long id;
-     String email;
-     String login;
-     String name;
-     LocalDate birthday;
 
+public class Genre {
+    Long id;
+    String name;
 }

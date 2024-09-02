@@ -24,7 +24,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class FilmController {
 
-    private static final String PATH = "/{id}/like/{userId}";
+    private static final String PATH = "/{id}/like/{user-id}";
     private final ValidateService validateService;
     private final FilmService filmService;
 
@@ -59,7 +59,7 @@ public class FilmController {
     }
 
     @PutMapping(PATH)
-    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
+    public void addLike(@PathVariable Long id, @PathVariable("user-id") Long userId) {
         validateService.checkId(id);
         validateService.checkId(userId);
         filmService.addLike(id, userId);
@@ -67,7 +67,7 @@ public class FilmController {
     }
 
     @DeleteMapping(PATH)
-    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
+    public void deleteLike(@PathVariable Long id, @PathVariable("user-id") Long userId) {
         validateService.checkId(id);
         validateService.checkId(userId);
         filmService.deleteLike(id, userId);
